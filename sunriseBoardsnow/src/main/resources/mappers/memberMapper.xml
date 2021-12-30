@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberMapper">
+	<!-- 게시판 글 작성 -->
+	<insert id="register">
+	    INSERT INTO user_info (  user_id
+	   					       , user_pw
+	   					       , user_name
+	   					       , user_phone1
+	   					       , user_phone2
+	   					       , user_phone3
+	   					       , user_addr1
+	   					       , user_addr2
+	   					       , user_company
+	   					       , creator
+	   					       , create_time
+	   					       , modifier
+	   					       , modified_time	)
+	                  VALUES (   #{user_id} 
+	                 		   , #{user_pw}
+	                 		   , #{user_name}
+	                 		   , #{user_phone1}
+	                 		   , #{user_phone2}
+	                 		   , #{user_phone3}
+	                 		   , #{user_addr1}
+	                 		   , #{user_addr2}
+	                 		   , #{user_company}
+	                 		   , NULL
+	                 		   , SYSDATE
+	                 		   , NULL
+	                 		   , SYSDATE )
+    </insert>
+    
+    <!-- 로그인 -->
+	<select id="login" resultType="com.sunrise.board.vo.MemberVO">
+		SELECT user_id, user_pw, user_name
+		  FROM user_info
+		 WHERE user_id = #{user_id}
+		 <!-- AND user_pw = #{user_pw} -->
+	</select>
+   
+   <!-- 회원정보 수정 -->
+	<update id="memberUpdate">
+		UPDATE user_info SET 
+		<!-- USERPASS = #{userPass}, -->
+		user_pw = #{user_pw},
+		user_name = #{user_name}
+		WHERE user_id = #{user_id}
+	</update>
+	
+	<!-- 패스워드 체크 -->
+	<select id="pwChk" resultType="int">
+		SELECT COUNT(*) FROM user_info
+		WHERE user_id = #{user_id}
+		  AND user_pw = #{user_pw}
+	</select>
+	
+		<!-- 아이디 중복 체크 -->
+	<select id="idChk" resultType="int">
+		SELECT COUNT(*) FROM user_info
+		WHERE user_id = #{user_id}
+	</select>
+	
+	<!-- selectbox com_code 테이블에서 phone code_type 값 가져오기 -->
+	<select id="getPhone" resultType="com.sunrise.board.vo.ComVO">
+		SELECT code_id
+			 , code_name
+		  FROM com_code
+		 WHERE code_type = #{code_type}
+	</select>
+	
+	<!-- selectbox com_code 테이블에서 phone code_type 값 가져오기 -->
+	<select id="getMenu" resultType="com.sunrise.board.vo.ComVO">
+		SELECT code_id
+			 , code_name
+		  FROM com_code
+		 WHERE code_type = #{code_type}
+	</select>
+</mapper>

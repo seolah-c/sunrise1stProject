@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardMapper">
+
+	<!-- 게시판 글 작성 -->
+	<insert id="insert">
+		insert into board ( board_type
+							, board_num
+							, board_title
+							, board_comment
+							, creator
+							, create_time)
+						values (
+							  #{board_type}
+							, board_num_seq.nextval
+							, #{board_title}
+							, #{board_comment}
+							, #{creator}
+							, SYSDATE)
+		
+	</insert>
+	
+	<select id="list" resultType="com.sunrise.board.vo.BoardVO">
+		  SELECT c.code_name as board_type
+			   , b.board_num
+			   , b.board_title
+			   , b.creator
+			   , to_date(b.create_time, 'YYYY-MM-DD') as create_time
+		  FROM board b inner join com_code c on b.board_type = c.code_id and c.code_type = 'menu' 
+		  ORDER BY b.board_num DESC
+	</select>
+	
+	<select id="read" parameterType="int" resultType="com.sunrise.board.vo.BoardVO">
+		SELECT	board_num
+			  , board_title
+			  , board_comment
+			  , creator
+			  , to_date(create_time, 'YYYY-MM-DD') as create_time
+		 FROM board
+		 WHERE board_num = #{board_num}
+	</select>
+	
+	<update id="update" parameterType="com.sunrise.board.vo.BoardVO">
+		UPDATE board
+		   SET board_title    =   #{board_title},
+		   	   board_comment  =   #{board_comment}
+		 WHERE Board_num = #{board_num} 
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		DELETE 
+		  FROM board
+		 WHERE board_num = #{board_num}
+	</delete>
+	
+</mapper>
